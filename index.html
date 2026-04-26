@@ -6,160 +6,366 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 20px;
-      transition: 0.3s;
-      background: #f8fafc;
-      color: #111;
+    * {
+      box-sizing: border-box;
     }
 
-    .dark {
-      background: #0f172a;
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at 20% 10%, #dbeafe, transparent 30%),
+        radial-gradient(circle at 80% 20%, #fce7f3, transparent 28%),
+        linear-gradient(135deg, #f8fafc, #e0f2fe);
+      color: #0f172a;
+      padding: 24px;
+      transition: 0.35s ease;
+    }
+
+    body.dark {
+      background:
+        radial-gradient(circle at 20% 10%, #1e3a8a, transparent 30%),
+        radial-gradient(circle at 80% 20%, #581c87, transparent 28%),
+        linear-gradient(135deg, #020617, #0f172a);
       color: white;
     }
 
     .container {
-      max-width: 800px;
+      max-width: 980px;
       margin: auto;
     }
 
-    .card {
-      padding: 20px;
-      border-radius: 16px;
-      margin-bottom: 12px;
+    .topbar {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 18px;
+    }
+
+    .toggle {
+      width: 64px;
+      height: 34px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.5);
+      background: rgba(255,255,255,0.45);
+      backdrop-filter: blur(20px);
+      cursor: pointer;
+      padding: 4px;
+      display: flex;
+      align-items: center;
+      transition: 0.3s;
+    }
+
+    .dark .toggle {
+      background: rgba(15,23,42,0.55);
+    }
+
+    .knob {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
       background: white;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+      transition: 0.3s;
     }
 
+    .dark .knob {
+      transform: translateX(30px);
+      background: #38bdf8;
+    }
+
+    .hero,
+    .card {
+      border: 1px solid rgba(255,255,255,0.55);
+      background: rgba(255,255,255,0.45);
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      box-shadow: 0 20px 60px rgba(15,23,42,0.14);
+    }
+
+    .dark .hero,
     .dark .card {
-      background: #1e293b;
+      background: rgba(15,23,42,0.45);
+      border: 1px solid rgba(255,255,255,0.12);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.35);
     }
 
-    .big {
-      font-size: 48px;
-      font-weight: bold;
+    .hero {
+      border-radius: 36px;
+      padding: 38px;
+      display: flex;
+      justify-content: space-between;
+      gap: 24px;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .label {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #2563eb;
+      margin-bottom: 10px;
+    }
+
+    .dark .label {
+      color: #60a5fa;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(42px, 7vw, 72px);
+      letter-spacing: -0.06em;
+      line-height: 0.95;
+    }
+
+    .subtitle {
+      margin-top: 16px;
+      font-size: 18px;
+      color: #475569;
+    }
+
+    .dark .subtitle {
+      color: #cbd5e1;
+    }
+
+    .main-number {
+      min-width: 190px;
+      text-align: center;
+      padding: 26px;
+      border-radius: 30px;
+      background: linear-gradient(135deg, #2563eb, #38bdf8);
+      color: white;
+      box-shadow: 0 18px 40px rgba(37,99,235,0.35);
+    }
+
+    .main-number .number {
+      font-size: 72px;
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    .main-number .text {
+      margin-top: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      opacity: 0.9;
     }
 
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 12px;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
     }
 
-    button {
-      cursor: pointer;
-      padding: 8px 12px;
-      border-radius: 8px;
-      border: none;
-      background: #3b82f6;
-      color: white;
+    .card {
+      border-radius: 28px;
+      padding: 22px;
+      min-height: 160px;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 24px 70px rgba(15,23,42,0.22);
+    }
+
+    .icon {
+      font-size: 28px;
+      margin-bottom: 16px;
+    }
+
+    .card-title {
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #64748b;
+    }
+
+    .dark .card-title {
+      color: #94a3b8;
+    }
+
+    .card-value {
+      margin-top: 8px;
+      font-size: 34px;
+      font-weight: 900;
+      letter-spacing: -0.04em;
+    }
+
+    .card-detail {
+      margin-top: 8px;
+      color: #64748b;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .dark .card-detail {
+      color: #cbd5e1;
+    }
+
+    @media (max-width: 850px) {
+      .hero {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .main-number {
+        width: 100%;
+      }
+
+      .grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 520px) {
+      body {
+        padding: 14px;
+      }
+
+      .hero {
+        padding: 26px;
+      }
+
+      .grid {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
+
 <body>
+  <div class="container">
+    <div class="topbar">
+      <button class="toggle" onclick="toggleMode()" aria-label="Toggle dark mode">
+        <div class="knob"></div>
+      </button>
+    </div>
 
-<div class="container">
-  <button onclick="toggleMode()">Toggle Mode</button>
+    <section class="hero">
+      <div>
+        <div class="label">🏫 School Countdown</div>
+        <h1>Almost<br />Summer.</h1>
+        <div class="subtitle">
+          Counting down to the last school day: <strong>June 16, 2026</strong>
+        </div>
+      </div>
 
-  <h1>🏫 School Countdown</h1>
+      <div class="main-number">
+        <div class="number" id="schoolDays">--</div>
+        <div class="text">school days left</div>
+      </div>
+    </section>
 
-  <div class="card">
-    <div class="big" id="schoolDays"></div>
-    <div>School days left</div>
+    <section class="grid">
+      <div class="card">
+        <div class="icon">📅</div>
+        <div class="card-title">Calendar Days</div>
+        <div class="card-value" id="calendarDays">--</div>
+        <div class="card-detail">Until June 16, 2026</div>
+      </div>
+
+      <div class="card">
+        <div class="icon">🛋️</div>
+        <div class="card-title">Weekend</div>
+        <div class="card-value" id="weekendDays">--</div>
+        <div class="card-detail" id="weekendText">Next weekend</div>
+      </div>
+
+      <div class="card">
+        <div class="icon">🎉</div>
+        <div class="card-title">Next Day Off</div>
+        <div class="card-value">Memorial Day</div>
+        <div class="card-detail">Monday, May 25, 2026</div>
+      </div>
+
+      <div class="card">
+        <div class="icon">⏰</div>
+        <div class="card-title">Until Day Off</div>
+        <div class="card-value" id="holidayCountdown">--</div>
+        <div class="card-detail">No school on Memorial Day</div>
+      </div>
+    </section>
   </div>
 
-  <div class="grid">
-    <div class="card">
-      <div id="calendarDays"></div>
-      <div>Calendar days left</div>
-    </div>
+  <script>
+    const LAST_DAY = new Date("2026-06-16T00:00:00");
+    const DAYS_OFF = ["2026-05-25"];
 
-    <div class="card">
-      <div id="weekendDays"></div>
-      <div>Days until weekend</div>
-    </div>
-
-    <div class="card">
-      <div>Memorial Day</div>
-      <div id="holidayDate"></div>
-    </div>
-
-    <div class="card">
-      <div id="holidayCountdown"></div>
-      <div>Days until day off</div>
-    </div>
-  </div>
-</div>
-
-<script>
-  const LAST_DAY = new Date("2026-06-16");
-  const DAYS_OFF = ["2026-05-25"]; // Memorial Day
-
-  function startOfDay(d) {
-    return new Date(d.getFullYear(), d.getMonth(), d.getDate());
-  }
-
-  function daysBetween(a, b) {
-    return Math.max(0, Math.ceil((startOfDay(b) - startOfDay(a)) / 86400000));
-  }
-
-  function isWeekend(d) {
-    return d.getDay() === 0 || d.getDay() === 6;
-  }
-
-  function isHoliday(d) {
-    const iso = d.toISOString().slice(0, 10);
-    return DAYS_OFF.includes(iso);
-  }
-
-  function calculateSchoolDays() {
-    let today = startOfDay(new Date());
-    let count = 0;
-    let current = new Date(today);
-
-    while (current <= LAST_DAY) {
-      if (!isWeekend(current) && !isHoliday(current)) {
-        count++;
-      }
-      current.setDate(current.getDate() + 1);
+    function startOfDay(d) {
+      return new Date(d.getFullYear(), d.getMonth(), d.getDate());
     }
 
-    return count;
-  }
+    function toISODate(d) {
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, "0");
+      const day = String(d.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    }
 
-  function nextSaturday(today) {
-    const day = today.getDay();
-    const diff = day === 6 ? 0 : (6 - day + 7) % 7;
-    return new Date(today.getFullYear(), today.getMonth(), today.getDate() + diff);
-  }
+    function daysBetween(a, b) {
+      return Math.max(0, Math.ceil((startOfDay(b) - startOfDay(a)) / 86400000));
+    }
 
-  function update() {
-    const today = new Date();
-    const memorial = new Date(DAYS_OFF[0]);
+    function isWeekend(d) {
+      return d.getDay() === 0 || d.getDay() === 6;
+    }
 
-    document.getElementById("schoolDays").innerText = calculateSchoolDays();
+    function isHoliday(d) {
+      return DAYS_OFF.includes(toISODate(d));
+    }
 
-    document.getElementById("calendarDays").innerText =
-      daysBetween(today, LAST_DAY);
+    function calculateSchoolDays() {
+      const today = startOfDay(new Date());
+      let current = new Date(today);
+      let count = 0;
 
-    document.getElementById("holidayCountdown").innerText =
-      daysBetween(today, memorial);
+      while (current <= LAST_DAY) {
+        if (!isWeekend(current) && !isHoliday(current)) {
+          count++;
+        }
+        current.setDate(current.getDate() + 1);
+      }
 
-    document.getElementById("weekendDays").innerText =
-      daysBetween(today, nextSaturday(today));
+      return count;
+    }
 
-    document.getElementById("holidayDate").innerText =
-      memorial.toDateString();
-  }
+    function nextSaturday(today) {
+      const start = startOfDay(today);
+      const diff = start.getDay() === 6 ? 0 : (6 - start.getDay() + 7) % 7;
+      return new Date(start.getFullYear(), start.getMonth(), start.getDate() + diff);
+    }
 
-  function toggleMode() {
-    document.body.classList.toggle("dark");
-  }
+    function formatDate(d) {
+      return d.toLocaleDateString(undefined, {
+        weekday: "long",
+        month: "long",
+        day: "numeric"
+      });
+    }
 
-  update();
-</script>
+    function update() {
+      const today = new Date();
+      const memorialDay = new Date("2026-05-25T00:00:00");
+      const weekend = nextSaturday(today);
 
+      document.getElementById("schoolDays").textContent = calculateSchoolDays();
+      document.getElementById("calendarDays").textContent = daysBetween(today, LAST_DAY);
+      document.getElementById("weekendDays").textContent = daysBetween(today, weekend);
+      document.getElementById("holidayCountdown").textContent = daysBetween(today, memorialDay);
+      document.getElementById("weekendText").textContent = "Next weekend starts " + formatDate(weekend);
+    }
+
+    function toggleMode() {
+      document.body.classList.toggle("dark");
+    }
+
+    update();
+  </script>
 </body>
 </html>
