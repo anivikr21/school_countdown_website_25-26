@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>School Countdown</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      transition: 0.3s;
+      background: #f8fafc;
+      color: #111;
+    }
+
+    .dark {
+      background: #0f172a;
+      color: white;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: auto;
+    }
+
+    .card {
+      padding: 20px;
+      border-radius: 16px;
+      margin-bottom: 12px;
+      background: white;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .dark .card {
+      background: #1e293b;
+    }
+
+    .big {
+      font-size: 48px;
+      font-weight: bold;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+    }
+
+    button {
+      cursor: pointer;
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: none;
+      background: #3b82f6;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <button onclick="toggleMode()">Toggle Mode</button>
+
+  <h1>🏫 School Countdown</h1>
+
+  <div class="card">
+    <div class="big" id="schoolDays"></div>
+    <div>School days left</div>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <div id="calendarDays"></div>
+      <div>Calendar days left</div>
+    </div>
+
+    <div class="card">
+      <div id="weekendDays"></div>
+      <div>Days until weekend</div>
+    </div>
+
+    <div class="card">
+      <div>Memorial Day</div>
+      <div id="holidayDate"></div>
+    </div>
+
+    <div class="card">
+      <div id="holidayCountdown"></div>
+      <div>Days until day off</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const LAST_DAY = new Date("2026-06-16");
+  const DAYS_OFF = ["2026-05-25"]; // Memorial Day
+
+  function startOfDay(d) {
+    return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  }
+
+  function daysBetween(a, b) {
+    return Math.max(0, Math.ceil((startOfDay(b) - startOfDay(a)) / 86400000));
+  }
+
+  function isWeekend(d) {
+    return d.getDay() === 0 || d.getDay() === 6;
+  }
+
+  function isHoliday(d) {
+    const iso = d.toISOString().slice(0, 10);
+    return DAYS_OFF.includes(iso);
+  }
+
+  function calculateSchoolDays() {
+    let today = startOfDay(new Date());
+    let count = 0;
+    let current = new Date(today);
+
+    while (current <= LAST_DAY) {
+      if (!isWeekend(current) && !isHoliday(current)) {
+        count++;
+      }
+      current.setDate(current.getDate() + 1);
+    }
+
+    return count;
+  }
+
+  function nextSaturday(today) {
+    const day = today.getDay();
+    const diff = day === 6 ? 0 : (6 - day + 7) % 7;
+    return new Date(today.getFullYear(), today.getMonth(), today.getDate() + diff);
+  }
+
+  function update() {
+    const today = new Date();
+    const memorial = new Date(DAYS_OFF[0]);
+
+    document.getElementById("schoolDays").innerText = calculateSchoolDays();
+
+    document.getElementById("calendarDays").innerText =
+      daysBetween(today, LAST_DAY);
+
+    document.getElementById("holidayCountdown").innerText =
+      daysBetween(today, memorial);
+
+    document.getElementById("weekendDays").innerText =
+      daysBetween(today, nextSaturday(today));
+
+    document.getElementById("holidayDate").innerText =
+      memorial.toDateString();
+  }
+
+  function toggleMode() {
+    document.body.classList.toggle("dark");
+  }
+
+  update();
+</script>
+
+</body>
+</html>
